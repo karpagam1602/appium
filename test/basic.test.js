@@ -1,6 +1,8 @@
+//websriverio act as a appium client
 const wdio = require('webdriverio');
 const assert = require('assert');
 
+//configuration to connect with appium server
 const opts = {
   port: 4723,
   capabilities: {
@@ -100,4 +102,30 @@ describe('Basic App Testing', () => {
       throw error;
     }
   });
+ 
+  it('should find Step One section title', async () => {
+  try {
+    // Look for the Step One text using UiSelector
+    const stepOneText = await client.$(
+      'android=new UiSelector().textContains("Step One")',
+    );
+    
+    // Wait for the element to be displayed with a timeout
+    await stepOneText.waitForDisplayed({
+      timeout: 5000,
+      timeoutMsg: 'Step One text not found within 5 seconds',
+    });
+    
+    // Assert that the element is actually displayed
+    assert.strictEqual(await stepOneText.isDisplayed(), true);
+    
+    // Verify the text content matches exactly
+    const text = await stepOneText.getText();
+    assert.strictEqual(text, 'Step One');
+  } catch (error) {
+    console.error('Step One section test failed:', error.message);
+    throw error;
+  }
+});
+    
 });
